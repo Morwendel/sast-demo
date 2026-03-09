@@ -1,10 +1,13 @@
 name: SAST Semgrep
 
-on: [push]
+on:
+  push:
+    branches: [ main ]
 
 jobs:
   semgrep-scan:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -13,3 +16,11 @@ jobs:
         uses: returntocorp/semgrep-action@v1
         with:
           config: auto
+          generateSarif: true
+          output: semgrep-report.sarif
+
+      - name: Upload Semgrep SARIF artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: semgrep-report
+          path: semgrep-report.sarif
